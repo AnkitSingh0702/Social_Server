@@ -9,7 +9,12 @@ const app = express();
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: [
+    'http://localhost:3000',
+    'https://your-vercel-app.vercel.app',
+    'https://social-server-ls65.onrender.com',
+    'https://friends-app-nine.vercel.app'
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -29,13 +34,14 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/friends', require('./routes/friends'));
-app.use('/api/posts', require('./routes/posts'));  // Add posts route
+app.use('/api/posts', require('./routes/posts'));
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => {
     console.error('MongoDB connection error:', err);
+    console.error('MongoDB URI:', process.env.MONGODB_URI);
     process.exit(1);
   });
 
