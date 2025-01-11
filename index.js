@@ -11,9 +11,8 @@ const app = express();
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://your-vercel-app.vercel.app',
-    'https://social-server-ls65.onrender.com',
-    'https://friends-app-nine.vercel.app'
+    'https://social-app-tau-black.vercel.app',
+    'https://social-server-egwx.onrender.com'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
