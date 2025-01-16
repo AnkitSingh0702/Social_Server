@@ -53,12 +53,16 @@ router.post('/', auth, (req, res) => {
       return res.status(400).json({ message: 'Please upload an image' });
     }
 
-    // Store only the relative path in MongoDB
-    const imagePath = `/uploads/${req.file.filename}`;
+    // Store full URL in database
+    const baseUrl = process.env.NODE_ENV === 'production' 
+      ? 'https://social-server-egwx.onrender.com'
+      : `http://localhost:${process.env.PORT}`;
+    
+    const imageUrl = `${baseUrl}/uploads/${req.file.filename}`;
 
     const post = new Post({
       user: req.userId,
-      image: imagePath,
+      image: imageUrl,
       caption: req.body.caption || ''
     });
 
@@ -79,12 +83,16 @@ router.get('/', auth, async (req, res) => {
       .populate('user', 'username email')
       .sort({ createdAt: -1 });
 
-    // Add full URLs to images for deployed version
+    const baseUrl = process.env.NODE_ENV === 'production' 
+      ? 'https://social-server-egwx.onrender.com'
+      : `http://localhost:${process.env.PORT}`;
+
+    // Ensure all images have full URLs
     const postsWithUrls = posts.map(post => ({
       ...post.toObject(),
       image: post.image.startsWith('http') 
         ? post.image 
-        : `https://social-server-ls65.onrender.com/uploads/${path.basename(post.image)}`
+        : `${baseUrl}/uploads/${path.basename(post.image)}`
     }));
 
     res.json(postsWithUrls);

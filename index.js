@@ -11,12 +11,14 @@ const app = express();
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://social-app-tau-black.vercel.app',
-    'https://social-server-egwx.onrender.com'
+    'http://localhost:3001',
+    'https://social-app-tau-black.vercel.app'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
+  maxAge: 86400
 }));
 app.use(express.json());
 
@@ -28,6 +30,7 @@ if (!fs.existsSync(uploadsDir)) {
 
 // Serve static files from uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
